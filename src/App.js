@@ -2,21 +2,34 @@ import React, { useState } from 'react';
 
 function App() {
   const [title, setTitle] = useState('');
+
+  // @todo skapa state enums av status
+  const [todoStatus, setTodoStatus] = useState('active');
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target);
+
+    // ?? is a "nullish coalescing operator", logical operator that returns values on the right if values on the left of the operand is null och undefined
+    let currentTodos = JSON.parse(localStorage.getItem('todo')) ?? [];
+    //@todo fråga om försöker lägga till befintlig todo
+    debugger;
+    if (currentTodos.length > 0) {
+      // append new todo if not empty
+      localStorage.setItem('todo', JSON.stringify([...currentTodos, { title, todoStatus }]));
+    } else {
+      localStorage.setItem('todo', JSON.stringify([{title, todoStatus}]));
+    }
   };
 
   const handleChange = (e) => {
     e.persist();
     setTitle(e.target.value);
-    console.log(title);
   };
   return (
     <div className="App fl w-100 pa6-ns tc">
       <header className="App-header">
         <ul>
           <li>Header </li>
+          <li><button onClick={() => localStorage.clear()}>Clear storage</button></li>
         </ul>
       </header>
       <form className="pa4 black-80" onSubmit={handleSubmit}>
