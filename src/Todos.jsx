@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Todo from './Todo';
-import Spinner from './Spinner';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
@@ -29,7 +28,7 @@ export default function Todos({ error, loading, setLoading, setError }) {
   }, [loading]); // anyting listed in the dependency array can trigger a re-run of useEffetct
 
   async function changeHandler(e) {
-    setCurrId(e.target.id)
+    setCurrId(e.target.id);
     const body = JSON.stringify({
       done: e.target.checked,
     });
@@ -43,21 +42,19 @@ export default function Todos({ error, loading, setLoading, setError }) {
         },
         body,
       });
-      console.log(response);
     } catch (error) {
       alert(error);
     } finally {
       setLoading(false);
       setCurrId(null);
-
     }
   }
 
-  async function deleteHandler(e) {
+  async function deleteHandler(e, id) {
     try {
       setLoading(true);
-
-      const response = await fetch(baseUrl + `todos/${e.target.id}`, {
+      setCurrId(id);
+      const response = await fetch(baseUrl + `/todos/${id}`, {
         method: 'DELETE',
       });
     } catch (error) {

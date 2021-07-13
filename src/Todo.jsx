@@ -1,14 +1,12 @@
 import React, {useRef} from 'react';
 import Spinner from './Spinner';
 
-export default function Todo({ todo, changeHandler, loading, currId }) {
-  const myRef = useRef(); // instance variable, värdet består även mellan renderingar
+export default function Todo({ todo, changeHandler, deleteHandler, loading, currId }) {
 
-  // if (loading) return <h1>Loading</h1>;
   return (
     <>
     <div className="bg-white ba b--black-10 shadow-5">
-      <ul ref={myRef}  className="measure center">
+      <ul className="measure center">
         <li className="flex items-center lh-copy pa3 ph0-l">
           {loading && currId === todo.id ? (
             <Spinner />
@@ -20,8 +18,9 @@ export default function Todo({ todo, changeHandler, loading, currId }) {
                 id={todo.id}
                 key={todo.id}
                 checked={todo.done}
-                onChange={(e) => changeHandler(e)}
+                onChange={changeHandler}
               />
+              <button className="f6 link dim ph3 pv2 mb2 dib white bg-black" disabled={loading} onClick={(e) => deleteHandler(e, todo.id)}>DELETE</button>
             </>
           )}
         </li>
@@ -30,6 +29,3 @@ export default function Todo({ todo, changeHandler, loading, currId }) {
     </>
   );
 }
-
-// id't från specific component
-// om id === komponentens id && loading { visa spinner}

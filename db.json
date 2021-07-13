@@ -1,28 +1,9 @@
 {
   "todos": [
     {
-      "title": 1,
-      "done": true,
+      "title": "1",
       "status": "active",
-      "id": "QIf5PvAcFQygucxfyU7Ob"
-    },
-    {
-      "title": "2",
-      "done": false,
-      "status": "active",
-      "id": "-M_0Qf1At94c5a8ZFSipJ"
-    },
-    {
-      "title": "3",
-      "done": true,
-      "status": "active",
-      "id": "Zdu7JjIlaXW8OChMRJ9N4"
-    },
-    {
-      "title": "5",
-      "done": true,
-      "status": "active",
-      "id": "ozJE2YOvtRZXp4JvmIEOG"
+      "id": "P9aMDezUFPGBNSxtLVDP9"
     }
   ]
 }
