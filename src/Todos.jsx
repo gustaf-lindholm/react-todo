@@ -8,7 +8,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
   const [status, setStatus] = useState(false);
   const [todos, setTodos] = useState([]);
   const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
-  const [sortOrder, setSortOrder] = useState("desc") // value and trigger for sorting the todos
+  const [sortOrder, setSortOrder] = useState('desc'); // value and trigger for sorting the todos
 
   // @todo sortera på nyaste först
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
     setCurrId(e.target.id);
     const body = JSON.stringify({
       done: e.target.checked,
-      status: TODOSTATUS.DONE
+      status: TODOSTATUS.DONE,
     });
 
     try {
@@ -47,7 +47,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
         body,
       });
     } catch (error) {
-      setError(error)
+      setError(error);
       alert(error);
     } finally {
       setLoading(false);
@@ -71,19 +71,31 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
   }
 
   function sortHandler(e) {
-    setLoading(true)
+    setLoading(true);
 
-    setSortOrder(e.target.id)
+    setSortOrder(e.target.id);
   }
 
 
 
   if (todos.length === 0) return <h1>You don't have any todos</h1>;
-  if(loading && !currId) return <Spinner />
+  if (loading && !currId) return <Spinner />;
   return (
     <div>
-    <a id="desc" className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4" onClick={sortHandler}>&uarr;</a>
-    <a id="asc" className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r" onClick={sortHandler}>&darr;</a>
+      <a
+        id="desc"
+        className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4"
+        onClick={sortHandler}
+      >
+        &uarr;
+      </a>
+      <a
+        id="asc"
+        className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r"
+        onClick={sortHandler}
+      >
+        &darr;
+      </a>
       {todos.map((todo, i) => (
         <Todo
           currId={currId}
