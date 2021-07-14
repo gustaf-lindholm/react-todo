@@ -5,13 +5,11 @@ const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export default function TodoForm({ setLoading, setError, loading, error }) {
   const [touched, setTouched] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState();
   //@todo fråga om försöker lägga till befintlig todo
 
   async function saveTodo() {
-
     if (!title) {
-      
     }
     const body = JSON.stringify({
       title,
@@ -29,13 +27,14 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
         },
         body,
       });
+      setTitle('');
       if (response.ok) {
-        console.log('todo added ', body);
       } else {
         throw response;
       }
     } catch (error) {
       console.error('ERROR: ', error);
+      setError(error);
     } finally {
       setLoading(false);
     }
@@ -52,9 +51,7 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
     setTitle(e.target.value);
   };
 
-  const getErrors = () => {
-
-  }
+  const getErrors = () => {};
   return (
     <form className="pa4 black-80" onSubmit={handleSubmit}>
       <fieldset id="addTask" className="ba b--transparent ph0 mh0">
