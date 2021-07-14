@@ -25,14 +25,13 @@ export default function TodoForm({ setLoading, setError, loading, error, TODOSTA
     return result;
   }
 
-  // @todo skapa state enums av status
-
   async function saveTodo() {
     const body = JSON.stringify({
       ...todo,
       done: false,
       statu: TODOSTATUS.ACTIVE,
       id: nanoid(),
+      added: Date.now()
     });
 
     try {

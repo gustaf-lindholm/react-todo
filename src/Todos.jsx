@@ -7,13 +7,13 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
   const [status, setStatus] = useState(false);
   const [todos, setTodos] = useState([]);
   const [currId, setCurrId] = useState(); // Used to show loading spinner in specific todo on delete
-
+  const [sortOrder, setSortOrder] = useState("desc")
 
   // @todo sortera på nyaste först
   useEffect(() => {
     async function getTodos() {
       try {
-        const response = await fetch(baseUrl + '/todos');
+        const response = await fetch(`${baseUrl}/todos?_sort=added&_order=${sortOrder}`);
         if (response.ok) {
           const json = await response.json();
           setTodos(json);
@@ -27,7 +27,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
       }
     }
     getTodos();
-  }, [loading]); // anyting listed in the dependency array can trigger a re-run of useEffetct
+  }, [loading, sortOrder]); // anyting listed in the dependency array can trigger a re-run of useEffetct
 
   async function changeHandler(e) {
     setCurrId(e.target.id);
@@ -72,6 +72,8 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
 
   return (
     <div>
+    <button className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4" onClick={() => setSortOrder("asc")}>&uarr;</button>
+    <button className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r" onClick={() => setSortOrder("desc")}>&darr;</button>
       {todos.map((todo, i) => (
         <Todo
           currId={currId}
