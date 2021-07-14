@@ -3,12 +3,13 @@ import Todo from './Todo';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
-export default function Todos({ error, loading, setLoading, setError }) {
+export default function Todos({ error, loading, setLoading, setError, TODOSTATUS }) {
   const [status, setStatus] = useState(false);
   const [todos, setTodos] = useState([]);
-  const [currId, setCurrId] = useState();
+  const [currId, setCurrId] = useState(); // Used to show loading spinner in specific todo on delete
 
 
+  // @todo sortera på nyaste först
   useEffect(() => {
     async function getTodos() {
       try {
@@ -32,6 +33,7 @@ export default function Todos({ error, loading, setLoading, setError }) {
     setCurrId(e.target.id);
     const body = JSON.stringify({
       done: e.target.checked,
+      status: TODOSTATUS.DONE
     });
 
     try {

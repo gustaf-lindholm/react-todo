@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import Todos from './Todos';
 import TodoForm from './TodoForm';
 
+
+//state enums 
+const TODOSTATUS = {
+  ACTIVE: "ACTIVE",
+  DONE: "DONE",
+  TRASHED: "TRASHED"
+}
+
 function App() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -17,7 +25,7 @@ function App() {
         </ul>
       </header>
       <div>
-        <TodoForm error={error} loading={loading} setError={setError} setLoading={setLoading}/>
+        <TodoForm error={error} loading={loading} setError={setError} setLoading={setLoading} TODOSTATUS={TODOSTATUS}/>
       </div>
       <div className="pa4">
         <h2>Tasks</h2>
@@ -32,7 +40,7 @@ function App() {
         </a>
       </div>
       <div className="pa4">
-        {<Todos error={error} setError={setError} loading={loading} setLoading={setLoading} />}
+        {<Todos error={error} setError={setError} loading={loading} setLoading={setLoading} TODOSTATUS={TODOSTATUS}/>}
       </div>
     </div>
   );
