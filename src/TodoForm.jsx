@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+
 const emptyTodo = {
   title: '',
 };
@@ -16,7 +17,7 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
   const formErrors = getErrors(emptyTodo);
 
   // // if the error object is empty, there are no errors
-  const isValid = Object.keys(formErrors).length !== 0;
+  const isValid = Object.keys(formErrors).length === 0;
 
   function getErrors(todo) {
     const result = {};
@@ -25,11 +26,13 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
     return result;
   }
 
+  // @todo skapa state enums av status
+
   async function saveTodo() {
     const body = JSON.stringify({
-      todo,
+      ...todo,
       done: false,
-      status: 'active',
+      statu: 'active',
       id: nanoid(),
     });
 
@@ -52,16 +55,19 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
       setError(error);
     } finally {
       setLoading(false);
+      setTodo((current) => {
+        return { ...current, title: '' };
+      });
+      setTouched({});
     }
   }
 
-  // @todo skapa state enums av status
   function handleSubmit(e) {
     e.preventDefault();
+
     if (isValid) {
       saveTodo();
-    } 
-    // ?? is a "nullish coalescing operator", logical operator that returns values on the right if values on the left of the operand is null och undefined
+    }
   }
 
   function handleChange(e) {
