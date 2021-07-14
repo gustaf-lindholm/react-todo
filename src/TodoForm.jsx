@@ -4,16 +4,22 @@ import { nanoid } from 'nanoid';
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export default function TodoForm({ setLoading, setError, loading, error }) {
-  const [title, setTitle] = useState('');
+  const [touched, setTouched] = useState(false);
+  const [title, setTitle] = useState("");
   //@todo fråga om försöker lägga till befintlig todo
 
   async function saveTodo() {
+
+    if (!title) {
+      
+    }
     const body = JSON.stringify({
       title,
+      done: false,
       status: 'active',
       id: nanoid(),
     });
-    console.log();
+
     try {
       setLoading(true);
       const response = await fetch(baseUrl + '/todos', {
@@ -45,6 +51,10 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
     e.persist();
     setTitle(e.target.value);
   };
+
+  const getErrors = () => {
+
+  }
   return (
     <form className="pa4 black-80" onSubmit={handleSubmit}>
       <fieldset id="addTask" className="ba b--transparent ph0 mh0">

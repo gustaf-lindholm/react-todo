@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -7,6 +7,7 @@ export default function Todos({ error, loading, setLoading, setError }) {
   const [status, setStatus] = useState(false);
   const [todos, setTodos] = useState([]);
   const [currId, setCurrId] = useState();
+
 
   useEffect(() => {
     async function getTodos() {
@@ -43,6 +44,7 @@ export default function Todos({ error, loading, setLoading, setError }) {
         body,
       });
     } catch (error) {
+      setError(error)
       alert(error);
     } finally {
       setLoading(false);
