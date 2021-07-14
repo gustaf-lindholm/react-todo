@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
+import Spinner from './Spinner';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export default function Todos({ error, loading, setLoading, setError, TODOSTATUS }) {
   const [status, setStatus] = useState(false);
   const [todos, setTodos] = useState([]);
-  const [currId, setCurrId] = useState(); // Used to show loading spinner in specific todo on delete
-  const [sortOrder, setSortOrder] = useState("desc")
+  const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
+  const [sortOrder, setSortOrder] = useState("desc") // value and trigger for sorting the todos
 
   // @todo sortera på nyaste först
   useEffect(() => {
@@ -65,15 +66,24 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
       alert(error);
     } finally {
       setLoading(false);
+      setCurrId(null);
     }
   }
 
-  if (todos.length === 0) return <h1>You don't have any todos</h1>;
+  function sortHandler(e) {
+    setLoading(true)
 
+    setSortOrder(e.target.id)
+  }
+
+
+
+  if (todos.length === 0) return <h1>You don't have any todos</h1>;
+  if(loading && !currId) return <Spinner />
   return (
     <div>
-    <button className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4" onClick={() => setSortOrder("asc")}>&uarr;</button>
-    <button className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r" onClick={() => setSortOrder("desc")}>&darr;</button>
+    <a id="desc" className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4" onClick={sortHandler}>&uarr;</a>
+    <a id="asc" className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r" onClick={sortHandler}>&darr;</a>
       {todos.map((todo, i) => (
         <Todo
           currId={currId}
