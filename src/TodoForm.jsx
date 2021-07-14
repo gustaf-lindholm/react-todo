@@ -3,16 +3,31 @@ import { nanoid } from 'nanoid';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+const emptyTodo = {
+  title: '',
+};
+
 export default function TodoForm({ setLoading, setError, loading, error }) {
-  const [touched, setTouched] = useState(false);
-  const [title, setTitle] = useState();
+  const [todo, setTodo] = useState(emptyTodo);
+  const [touched, setTouched] = useState({});
   //@todo fråga om försöker lägga till befintlig todo
 
+  //derived state
+  const formErrors = getErrors(emptyTodo);
+
+  // // if the error object is empty, there are no errors
+  const isValid = Object.keys(formErrors).length !== 0;
+
+  function getErrors(todo) {
+    const result = {};
+    if (!todo) result.todo = 'todo is required';
+
+    return result;
+  }
+
   async function saveTodo() {
-    if (!title) {
-    }
     const body = JSON.stringify({
-      title,
+      todo,
       done: false,
       status: 'active',
       id: nanoid(),
@@ -27,7 +42,7 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
         },
         body,
       });
-      setTitle('');
+
       if (response.ok) {
       } else {
         throw response;
@@ -39,33 +54,46 @@ export default function TodoForm({ setLoading, setError, loading, error }) {
       setLoading(false);
     }
   }
+
   // @todo skapa state enums av status
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
-    saveTodo();
+    if (isValid) {
+      saveTodo();
+    } 
     // ?? is a "nullish coalescing operator", logical operator that returns values on the right if values on the left of the operand is null och undefined
-  };
+  }
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     e.persist();
-    setTitle(e.target.value);
-  };
+    setTodo((current) => {
+      return { ...current, [e.target.id]: e.target.value };
+    });
+  }
 
-  const getErrors = () => {};
+  function handleBlur(e) {
+    e.persist();
+    setTouched((current) => {
+      return { ...current, [e.target.id]: true };
+    });
+  }
+
   return (
     <form className="pa4 black-80" onSubmit={handleSubmit}>
       <fieldset id="addTask" className="ba b--transparent ph0 mh0">
         <legend className="ph0 mh0 fw6 clip">Add a task</legend>
         <div className="mt3">
-          <label className="db fw4 lh-copy f6" htmlFor="addTask">
-            Task title
+          <label className={`db fw4 lh-copy f6 ${touched.title && 'red'}`} htmlFor="addTask">
+            {!isValid && touched.title ? 'Title is required' : 'Task title'}
           </label>
           <input
+            id="title"
             className="pa2 input-reset ba bg-transparent w-100 measure"
             type="text"
             placeholder="title"
             onChange={handleChange}
-            value={title}
+            onBlur={handleBlur}
+            value={todo.title}
           />
         </div>
       </fieldset>
