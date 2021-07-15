@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -13,15 +13,17 @@ export default function TodoForm({ setLoading, setError, loading, error, TODOSTA
   //@todo fråga om försöker lägga till befintlig todo
 
   //derived state
-  const formErrors = getErrors(emptyTodo);
+  const formErrors = getErrors(todo);
 
   // // if the error object is empty, there are no errors
-  const isValid = Object.keys(formErrors).length === 0;
+  let isValid = Boolean(Object.keys(formErrors).length === 0);
+
+  // false if not touched
+  let isTouched = Boolean(Object.keys(touched).length !== 0);
 
   function getErrors(todo) {
     const result = {};
-    if (!todo) result.todo = 'todo is required';
-
+    if (!todo.title) result.title = 'Title is required';
     return result;
   }
 
@@ -31,7 +33,7 @@ export default function TodoForm({ setLoading, setError, loading, error, TODOSTA
       done: false,
       statu: TODOSTATUS.ACTIVE,
       id: nanoid(),
-      added: Date.now()
+      added: Date.now(),
     });
 
     try {
@@ -87,8 +89,11 @@ export default function TodoForm({ setLoading, setError, loading, error, TODOSTA
       <fieldset id="addTask" className="ba b--transparent ph0 mh0">
         <legend className="ph0 mh0 fw6 clip">Add a task</legend>
         <div className="mt3">
-          <label className={`db fw4 lh-copy f6 ${touched.title && 'red'}`} htmlFor="addTask">
-            {!isValid && touched.title ? 'Title is required' : 'Task title'}
+          <label
+            className={`db fw4 lh-copy f6 ${isTouched && !isValid ? 'red' : ''}`}
+            htmlFor="addTask"
+          >
+            {!isValid && isTouched ? `${formErrors.title}` : 'Task title'}
           </label>
           <input
             id="title"
@@ -106,6 +111,8 @@ export default function TodoForm({ setLoading, setError, loading, error, TODOSTA
           className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6"
           type="submit"
           value="Add"
+          id="add"
+          onClick={handleBlur}
         />
       </div>
     </form>

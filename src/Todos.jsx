@@ -10,7 +10,6 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
   const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
   const [sortOrder, setSortOrder] = useState('desc'); // value and trigger for sorting the todos
 
-  // @todo sortera på nyaste först
   useEffect(() => {
     async function getTodos() {
       try {
@@ -21,8 +20,8 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
         } else {
           throw response;
         }
-      } catch (error) {
-        alert(error);
+      } catch (e) {
+        setError(e)
       } finally {
         setLoading(false);
       }
