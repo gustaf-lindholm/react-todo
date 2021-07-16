@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import Spinner from './Spinner';
 
-export default function Todo({ todo, changeHandler, deleteHandler, loading, currId }) {
+export default function Todo({ todo, doneHandler, deleteHandler, loading, currId }) {
 
   return (
     <>
@@ -18,7 +18,7 @@ export default function Todo({ todo, changeHandler, deleteHandler, loading, curr
                 id={todo.id}
                 key={todo.id}
                 checked={todo.done}
-                onChange={changeHandler}
+                onChange={doneHandler}
               />
               <button className="f6 link dim ph3 pv2 mb2 dib white bg-black" disabled={loading} onClick={(e) => deleteHandler(e, todo.id)}>DELETE</button>
             </>
