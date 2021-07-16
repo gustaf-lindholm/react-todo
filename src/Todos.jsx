@@ -4,9 +4,17 @@ import Spinner from './Spinner';
 import TodoForm from './TodoForm';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
+//state enums 
+const TODOSTATUS = {
+  ACTIVE: "ACTIVE",
+  DONE: "DONE",
+  TRASHED: "TRASHED"
+}
 
-export default function Todos({ error, loading, setLoading, setError, TODOSTATUS }) {
+export default function Todos({ error, loading, setLoading, setError }) {
   const [status, setStatus] = useState(false);
+  // const [loading, setLoading] = useState(true);
+
   const [todos, setTodos] = useState([]);
   const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
   const [sortOrder, setSortOrder] = useState('desc'); // value and trigger for sorting the todos
@@ -30,11 +38,16 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
     getTodos();
   }, [loading, sortOrder]); // anyting listed in the dependency array can trigger a re-run of useEffetct
 
-  async function changeHandler(e) {
+  async function doneHandler(e) {
     setCurrId(e.target.id);
+    const isChecked = e.target.checked
+
+    const status = isChecked ? TODOSTATUS.DONE : TODOSTATUS.ACTIVE
+
+    console.log(e.target)
     const body = JSON.stringify({
       done: e.target.checked,
-      status: TODOSTATUS.DONE,
+      status
     });
 
     try {
@@ -81,17 +94,17 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
   return (
     <>
       <div>
-        <TodoForm />
+        <TodoForm TODOSTATUS={TODOSTATUS} setLoading={setLoading}/>
       </div>
       <div className="pa4">
         <h2>Tasks</h2>
-        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+        <a id="status-all" className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <span className="pl1">All</span>
         </a>
-        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+        <a id="status-active" className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <span className="pl1">Active</span>
         </a>
-        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+        <a id="status-completed" className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <span className="pl1">Completed</span>
         </a>
       </div>
@@ -116,7 +129,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
             currId={currId}
             key={todo.id}
             todo={todo}
-            changeHandler={changeHandler}
+            doneHandler={doneHandler}
             deleteHandler={deleteHandler}
             loading={loading}
           />
