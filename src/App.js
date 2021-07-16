@@ -75,7 +75,7 @@ function App() {
       </div>
       <div className="pa4">
         <h2>Tasks</h2>
-        <button id="status-all" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+        <button id="status-" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           All
         </button>
         <button id="status-active" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
