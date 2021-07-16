@@ -8,10 +8,9 @@ const emptyTodo = {
   title: '',
 };
 
-export default function TodoForm({ setLoading, setError, TODOSTATUS }) {
+export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
   const [todo, setTodo] = useState(emptyTodo);
   const [touched, setTouched] = useState({});
-  //@todo fråga om försöker lägga till befintlig todo
 
   //derived state
   const formErrors = getErrors(todo);
@@ -28,7 +27,17 @@ export default function TodoForm({ setLoading, setError, TODOSTATUS }) {
     return result;
   }
 
+  function checkForDuplicate() {
+    // take todo.title and compare with todos.title
+    const duplicate = todos.filter((t, index) => {
+      return t.title === todo.title
+    })
+
+    return duplicate;
+  }
   async function saveTodo() {
+    
+    // //before saving - check if todo-title already exists
     const body = JSON.stringify({
       ...todo,
       done: false,
