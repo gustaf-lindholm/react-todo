@@ -1,46 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
 import Spinner from './Spinner';
-import TodoForm from './TodoForm';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 //state enums 
-const TODOSTATUS = {
-  ACTIVE: "ACTIVE",
-  DONE: "DONE",
-  TRASHED: "TRASHED"
-}
 
-export default function Todos({ error, loading, setLoading, setError }) {
-  const [status, setStatus] = useState(false);
-  // const [loading, setLoading] = useState(true);
 
-  const [todos, setTodos] = useState([]);
+export default function Todos({ error, loading, setLoading, setError, setOrder, todos, TODOSTATUS }) {
+
   const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
-  const [order, setOrder] = useState('desc'); // value and trigger for sorting the todos
-  const [sort, setSort] = useState();
-
-  useEffect(() => {
-    // if sort is set, append to url
-    const sortParameter = sort ? `&status=${sort}` : ""
-    
-    async function getTodos() {
-      try {
-        const response = await fetch(`${baseUrl}/todos?_sort=added&_order=${order}${sortParameter}`);
-        if (response.ok) {
-          const json = await response.json();
-          setTodos(json);
-        } else {
-          throw response;
-        }
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getTodos();
-  }, [loading, order]); // anyting listed in the dependency array can trigger a re-run of useEffetct
 
   async function doneHandler(e) {
     setCurrId(e.target.id);
@@ -87,16 +55,6 @@ export default function Todos({ error, loading, setLoading, setError }) {
     }
   }
 
-  function sortHandler(e) {
-    
-    //ta e.target.id och plockat ut strängen efter status-
-    // hämta todos baserat på parametern
-    const parameter = e.target.id.substr(7).toUpperCase() 
-
-    setSort(parameter);
-    setLoading(true);
-
-  }
   function orderHandler(e) {
     setLoading(true);
 
@@ -107,21 +65,7 @@ export default function Todos({ error, loading, setLoading, setError }) {
   if (loading && !currId) return <Spinner />;
   return (
     <>
-      <div>
-        <TodoForm TODOSTATUS={TODOSTATUS} setLoading={setLoading}/>
-      </div>
-      <div className="pa4">
-        <h2>Tasks</h2>
-        <button id="status-all" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-          All
-        </button>
-        <button id="status-active" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-          Active
-        </button>
-        <button id="status-done" onClick={sortHandler} className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-          Completed
-        </button>
-      </div>
+
       <div>
         <a
           id="desc"
