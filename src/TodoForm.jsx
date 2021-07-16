@@ -3,11 +3,18 @@ import { nanoid } from 'nanoid';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+//state enums 
+const TODOSTATUS = {
+  ACTIVE: "ACTIVE",
+  DONE: "DONE",
+  TRASHED: "TRASHED"
+}
+
 const emptyTodo = {
   title: '',
 };
 
-export default function TodoForm({ setLoading, setError, loading, error, TODOSTATUS }) {
+export default function TodoForm({ setLoading, setError, loading, error }) {
   const [todo, setTodo] = useState(emptyTodo);
   const [touched, setTouched] = useState({});
   //@todo fråga om försöker lägga till befintlig todo

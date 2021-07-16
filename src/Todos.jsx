@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
 import Spinner from './Spinner';
+import TodoForm from './TodoForm';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
@@ -21,7 +22,7 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
           throw response;
         }
       } catch (e) {
-        setError(e)
+        setError(e);
       } finally {
         setLoading(false);
       }
@@ -75,36 +76,52 @@ export default function Todos({ error, loading, setLoading, setError, TODOSTATUS
     setSortOrder(e.target.id);
   }
 
-
-
   if (todos.length === 0) return <h1>You don't have any todos</h1>;
   if (loading && !currId) return <Spinner />;
   return (
-    <div>
-      <a
-        id="desc"
-        className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4"
-        onClick={sortHandler}
-      >
-        &uarr;
-      </a>
-      <a
-        id="asc"
-        className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r"
-        onClick={sortHandler}
-      >
-        &darr;
-      </a>
-      {todos.map((todo, i) => (
-        <Todo
-          currId={currId}
-          key={todo.id}
-          todo={todo}
-          changeHandler={changeHandler}
-          deleteHandler={deleteHandler}
-          loading={loading}
-        />
-      ))}
-    </div>
+    <>
+      <div>
+        <TodoForm />
+      </div>
+      <div className="pa4">
+        <h2>Tasks</h2>
+        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+          <span className="pl1">All</span>
+        </a>
+        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+          <span className="pl1">Active</span>
+        </a>
+        <a className="w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+          <span className="pl1">Completed</span>
+        </a>
+      </div>
+      <div>
+        <a
+          id="desc"
+          className="pointer w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4"
+          onClick={sortHandler}
+        >
+          &uarr;
+        </a>
+        <a
+          id="asc"
+          className="pointe w-auto f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4r"
+          onClick={sortHandler}
+        >
+          &darr;
+        </a>
+
+        {todos.map((todo, i) => (
+          <Todo
+            currId={currId}
+            key={todo.id}
+            todo={todo}
+            changeHandler={changeHandler}
+            deleteHandler={deleteHandler}
+            loading={loading}
+          />
+        ))}
+      </div>
+    </>
   );
 }
