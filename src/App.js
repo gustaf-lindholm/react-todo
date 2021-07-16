@@ -95,6 +95,7 @@ function App() {
             sortHandler={sortHandler}
             TODOSTATUS={TODOSTATUS}
             setSort={setSort}
+            setOrder={setOrder}
             todos={todos}
           />
         }
