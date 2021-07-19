@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid';
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
-
 const emptyTodo = {
   title: '',
 };
@@ -11,6 +10,8 @@ const emptyTodo = {
 export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
   const [todo, setTodo] = useState(emptyTodo);
   const [touched, setTouched] = useState({});
+  const [confirmAdd, setConfirmAdd] = useState();
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   //derived state
   const formErrors = getErrors(todo);
@@ -30,45 +31,66 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
   function checkForDuplicate() {
     // take todo.title and compare with todos.title
     const duplicate = todos.filter((t, index) => {
-      return t.title === todo.title
-    })
-
-    return duplicate;
-  }
-  async function saveTodo() {
-    
-    // //before saving - check if todo-title already exists
-    const body = JSON.stringify({
-      ...todo,
-      done: false,
-      status: TODOSTATUS.ACTIVE,
-      id: nanoid(),
-      added: Date.now(),
+      return t.title === todo.title;
     });
 
-    try {
-      setLoading(true);
-      const response = await fetch(baseUrl + '/todos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
+    // if there is a duplicate, we need to set state to be able to pause before deciding on saving todo
+    duplicate ? setConfirmAdd(false) : setConfirmAdd(true);
+    setIsDuplicate(true);
+  }
+
+  async function saveTodo() {
+    // //before saving - check if todo-title already exists
+    // if there's a duplicate - pause and ask for confirmation
+    // if confirm yes, continue saving
+    // else stop saving
+
+    checkForDuplicate();
+
+    if (confirmAdd) {
+      const body = JSON.stringify({
+        ...todo,
+        done: false,
+        status: TODOSTATUS.ACTIVE,
+        id: nanoid(),
+        added: Date.now(),
       });
 
-      if (response.ok) {
-      } else {
-        throw response;
+      try {
+        setLoading(true);
+        const response = await fetch(baseUrl + '/todos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
+        });
+
+        if (response.ok) {
+        } else {
+          throw response;
+        }
+      } catch (error) {
+        console.error('ERROR: ', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+        setTodo((current) => {
+          return { ...current, title: '' };
+        });
+        setTouched({});
+        setConfirmAdd();
+        setIsDuplicate(false);
       }
-    } catch (error) {
-      console.error('ERROR: ', error);
-      setError(error);
-    } finally {
-      setLoading(false);
+    }
+
+    if (confirmAdd === false) {
       setTodo((current) => {
         return { ...current, title: '' };
       });
       setTouched({});
+      setConfirmAdd();
+      setIsDuplicate(false);
     }
   }
 
@@ -117,6 +139,11 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
         </div>
       </fieldset>
       <div className="mt3">
+        <div id="confirm-add" hidden={!isDuplicate}>
+          <p>You already have a todo with {todo.title}. Do you want to add it anyway?</p>
+          <button onClick={() => setConfirmAdd(true)}>Yes</button>
+          <button onClick={() => setConfirmAdd(false)}>No</button>
+        </div>
         <input
           className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6"
           type="submit"
