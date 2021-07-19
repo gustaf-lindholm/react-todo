@@ -40,13 +40,12 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
   }
 
   async function saveTodo() {
-    // //before saving - check if todo-title already exists
-    // if there's a duplicate - pause and ask for confirmation
-    // if confirm yes, continue saving
-    // else stop saving
 
+    //before saving - check if todo-title already exists
+     // if there's a duplicate - pause and ask for user confirmation
     checkForDuplicate();
 
+    // if confirm yes, continue saving
     if (confirmAdd) {
       const body = JSON.stringify({
         ...todo,
@@ -84,6 +83,7 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
       }
     }
 
+    // if user don't want to add duplicate, clear state to default
     if (confirmAdd === false) {
       setTodo((current) => {
         return { ...current, title: '' };
