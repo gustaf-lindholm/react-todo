@@ -1,30 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
 import Spinner from './Spinner';
-
+import { TODOSTATUS } from './enums';
+import { TodoInterface } from './Interfaces';
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
-//state enums 
 
+interface TodosProps {
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setOrder: React.Dispatch<React.SetStateAction<string>>;
+  todos: Array<TodoInterface>;
+}
 
-export default function Todos({ error, loading, setLoading, setError, setOrder, todos, TODOSTATUS }) {
+const Todos = ({ loading, setLoading, setError, setOrder, todos }: TodosProps) => {
+  const [currId, setCurrId] = useState<null | string>(null); // Used to show loading spinner in specific todo on delete
 
-  const [currId, setCurrId] = useState(null); // Used to show loading spinner in specific todo on delete
+  async function doneHandler(e: React.SyntheticEvent<HTMLFormElement>) {
+    const target = e.target as HTMLFormElement;
+    setCurrId(target.id);
+    const isChecked = target.checked;
 
-  async function doneHandler(e) {
-    setCurrId(e.target.id);
-    const isChecked = e.target.checked
+    const status = isChecked ? TODOSTATUS.DONE : TODOSTATUS.ACTIVE;
 
-    const status = isChecked ? TODOSTATUS.DONE : TODOSTATUS.ACTIVE
-
-    console.log(e.target)
+    console.log(e.target);
     const body = JSON.stringify({
-      done: e.target.checked,
-      status
+      done: target.checked,
+      status,
     });
 
     try {
       setLoading(true);
-      const response = await fetch(baseUrl + `/todos/${e.target.id}`, {
+      const response = await fetch(baseUrl + `/todos/${target.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +47,7 @@ export default function Todos({ error, loading, setLoading, setError, setOrder, 
     }
   }
 
-  async function deleteHandler(e, id) {
+  async function deleteHandler(id: string) {
     try {
       setLoading(true);
       setCurrId(id);
@@ -55,17 +62,17 @@ export default function Todos({ error, loading, setLoading, setError, setOrder, 
     }
   }
 
-  function orderHandler(e) {
+  function orderHandler(e: React.PointerEvent<HTMLAnchorElement>) {
+    const target = e.target as Element;
     setLoading(true);
 
-    setOrder(e.target.id);
+    setOrder(target.id);
   }
 
   if (todos.length === 0) return <h1>You don't have any todos</h1>;
   if (loading && !currId) return <Spinner />;
   return (
     <>
-
       <div>
         <a
           id="desc"
@@ -82,10 +89,9 @@ export default function Todos({ error, loading, setLoading, setError, setOrder, 
           &darr;
         </a>
 
-        {
-          todos.map((todo, i) => (
+        {todos.map((todo, i) => (
           <Todo
-            currId={currId}
+            currId={currId!}
             key={todo.id}
             todo={todo}
             doneHandler={doneHandler}
@@ -96,4 +102,6 @@ export default function Todos({ error, loading, setLoading, setError, setOrder, 
       </div>
     </>
   );
-}
+};
+
+export default Todos;
