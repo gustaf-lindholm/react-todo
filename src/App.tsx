@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Todos from './Todos';
 import TodoForm from './TodoForm';
-import { TODOSTATUS } from './enums';
 import { TodoInterface } from './Interfaces';
 
 
@@ -11,13 +10,13 @@ function App() {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<boolean>(false);
   const [todos, setTodos] = React.useState<Array<TodoInterface> | []>([]);
-  const [sort, setSort] = React.useState<React.SetStateAction<string>>("asc");
-  const [order, setOrder] = React.useState<React.SetStateAction<string>>('desc'); // value and trigger for sorting the todos
+  const [todoStatus, setTodoStatus] = React.useState<React.SetStateAction<string | null>>(null); // value and trigger for sorting by completed, active or all todos
+  const [order, setOrder] = React.useState<React.SetStateAction<string>>('desc'); // value and trigger for ordering the todos by time added
 
 
   React.useEffect(() => {
-    // if sort is set, append to url
-    const sortParameter = sort ? `&status=${sort}` : ""
+    // if todoStatus is set, append to url
+    const sortParameter = todoStatus ? `&status=${todoStatus}` : ""
     
     async function getTodos() {
       try {
@@ -32,22 +31,22 @@ function App() {
         setError(e);
       } finally {
         setLoading(false);
-        setSort("asc")
+        // setTodoStatus("asc")
       }
     }
     getTodos();
-  }, [loading, order]); // anyting listed in the dependency array can trigger a re-run of useEffetctisted in the dependency array can trigger a re-run of useEffetct
+  }, [order, loading, todoStatus]); // anyting listed in the dependency array can trigger a re-run of useEffect
   
   function sortHandler(e : React.PointerEvent<HTMLButtonElement>) {
+    setLoading(true);
     
     const target = e.target as Element;
     //ta e.target.id och plockat ut strängen efter status-
     // hämta todos baserat på parametern
     const parameter = target.id.substr(7).toUpperCase() 
 
-    setSort(parameter);
-    setLoading(true);
-
+    setTodoStatus(parameter);
+    setLoading(false)
   }
 
 

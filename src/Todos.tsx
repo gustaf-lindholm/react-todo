@@ -13,7 +13,7 @@ interface TodosProps {
   todos: Array<TodoInterface>;
 }
 
-const Todos = ({ loading, setLoading, setError, setOrder, todos }: TodosProps) => {
+const Todos = ({ loading, todos, setLoading, setError, setOrder }: TodosProps) => {
   const [currId, setCurrId] = useState<null | string>(null); // Used to show loading spinner in specific todo on delete
 
   async function doneHandler(e: React.SyntheticEvent<HTMLFormElement>) {
@@ -22,8 +22,6 @@ const Todos = ({ loading, setLoading, setError, setOrder, todos }: TodosProps) =
     const isChecked = target.checked;
 
     const status = isChecked ? TODOSTATUS.DONE : TODOSTATUS.ACTIVE;
-
-    console.log(e.target);
     const body = JSON.stringify({
       done: target.checked,
       status,
@@ -31,6 +29,7 @@ const Todos = ({ loading, setLoading, setError, setOrder, todos }: TodosProps) =
 
     try {
       setLoading(true);
+
       const response = await fetch(baseUrl + `/todos/${target.id}`, {
         method: 'PATCH',
         headers: {
