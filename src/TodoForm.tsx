@@ -1,17 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import { nanoid } from 'nanoid';
-
+import { TODOSTATUS } from './enums';
+import { TodoInterface } from './Interfaces';
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
+interface FormProps {
+  setLoading(arg: boolean) : void;
+  setError(arg: boolean) : void;
+  todos : Array<TodoInterface> | [];
+}
 
 const emptyTodo = {
   title: '',
+  done: false,
+  status: TODOSTATUS.ACTIVE,
+  id: "",
+  added: 0
 };
 
-export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
-  const [todo, setTodo] = useState(emptyTodo);
-  const [touched, setTouched] = useState({});
-  const [confirmAdd, setConfirmAdd] = useState();
-  const [isDuplicate, setIsDuplicate] = useState(false);
+interface FormErrors {
+  title : string
+}
+
+const TodoForm = ({setLoading, setError, todos } : FormProps ) => {
+  const [todo, setTodo] = React.useState<TodoInterface>(emptyTodo);
+  const [touched, setTouched] = React.useState<Object>({});
+  const [confirmAdd, setConfirmAdd] = React.useState<Boolean | null>();
+  const [isDuplicate, setIsDuplicate] = React.useState<Boolean>(false);
 
   //derived state
   const formErrors = getErrors(todo);
@@ -22,8 +37,8 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
   // false if not touched
   let isTouched = Boolean(Object.keys(touched).length !== 0);
 
-  function getErrors(todo) {
-    const result = {};
+  function getErrors(todo : TodoInterface) {
+    const result : FormErrors = { title: ""};
     if (!todo.title) result.title = 'Title is required';
     return result;
   }
@@ -56,7 +71,7 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
       });
 
       try {
-        setLoading(true);
+        setLoading(true)
         const response = await fetch(baseUrl + '/todos', {
           method: 'POST',
           headers: {
@@ -78,7 +93,7 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
           return { ...current, title: '' };
         });
         setTouched({});
-        setConfirmAdd();
+        setConfirmAdd(null);
         setIsDuplicate(false);
       }
     }
@@ -89,12 +104,12 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
         return { ...current, title: '' };
       });
       setTouched({});
-      setConfirmAdd();
+      setConfirmAdd(null);
       setIsDuplicate(false);
     }
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e : React.PointerEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (isValid) {
@@ -102,14 +117,14 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
     }
   }
 
-  function handleChange(e) {
+  function handleChange(e : React.ChangeEvent<HTMLInputElement>) {
     e.persist();
     setTodo((current) => {
       return { ...current, [e.target.id]: e.target.value };
     });
   }
 
-  function handleBlur(e) {
+  function handleBlur(e : React.ChangeEvent<HTMLInputElement>) {
     e.persist();
     setTouched((current) => {
       return { ...current, [e.target.id]: true };
@@ -149,9 +164,11 @@ export default function TodoForm({ setLoading, setError, todos, TODOSTATUS }) {
           type="submit"
           value="Add"
           id="add"
-          onClick={handleBlur}
+          // onClick={handleBlur}
         />
       </div>
     </form>
   );
 }
+
+export default TodoForm;

@@ -1,7 +1,15 @@
 import React, {useRef} from 'react';
 import Spinner from './Spinner';
 
-export default function Todo({ todo, doneHandler, deleteHandler, loading, currId }) {
+interface Props {
+  todo: any;
+  doneHandler: any;
+  deleteHandler: any;
+  loading: boolean;
+  currId: string;
+}
+
+export default function Todo ({ todo, doneHandler, deleteHandler, loading, currId }:Props) {
 
   return (
     <>

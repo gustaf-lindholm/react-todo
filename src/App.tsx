@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import Todos from './Todos';
 import TodoForm from './TodoForm';
+import { TODOSTATUS } from './enums';
+import { TodoInterface } from './Interfaces';
 
-//state enums
-const TODOSTATUS = {
-  ACTIVE: 'ACTIVE',
-  DONE: 'DONE',
-  TRASHED: 'TRASHED',
-};
+
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 function App() {
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [todos, setTodos] = useState([]);
-  const [sort, setSort] = useState();
-  const [order, setOrder] = useState('desc'); // value and trigger for sorting the todos
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<boolean>(false);
+  const [todos, setTodos] = React.useState<Array<TodoInterface> | []>([]);
+  const [sort, setSort] = React.useState<React.SetStateAction<string>>("asc");
+  const [order, setOrder] = React.useState<React.SetStateAction<string>>('desc'); // value and trigger for sorting the todos
 
 
-  useEffect(() => {
+  React.useEffect(() => {
     // if sort is set, append to url
     const sortParameter = sort ? `&status=${sort}` : ""
     
@@ -35,17 +32,18 @@ function App() {
         setError(e);
       } finally {
         setLoading(false);
-        setSort()
+        setSort("asc")
       }
     }
     getTodos();
   }, [loading, order]); // anyting listed in the dependency array can trigger a re-run of useEffetctisted in the dependency array can trigger a re-run of useEffetct
   
-  function sortHandler(e) {
+  function sortHandler(e : React.PointerEvent<HTMLButtonElement>) {
     
+    const target = e.target as Element;
     //ta e.target.id och plockat ut strängen efter status-
     // hämta todos baserat på parametern
-    const parameter = e.target.id.substr(7).toUpperCase() 
+    const parameter = target.id.substr(7).toUpperCase() 
 
     setSort(parameter);
     setLoading(true);
@@ -65,11 +63,8 @@ function App() {
       </header>
       <div>
         <TodoForm
-          error={error}
-          loading={loading}
-          setError={setError}
           setLoading={setLoading}
-          TODOSTATUS={TODOSTATUS}
+          setError={setError}
           todos={todos}
         />
       </div>
@@ -92,11 +87,7 @@ function App() {
             setError={setError}
             loading={loading}
             setLoading={setLoading}
-            sortHandler={sortHandler}
-            TODOSTATUS={TODOSTATUS}
-            setSort={setSort}
             setOrder={setOrder}
-            todos={todos}
           />
         }
       </div>
