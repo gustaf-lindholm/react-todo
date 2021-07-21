@@ -28,7 +28,8 @@ function App() {
           throw response;
         }
       } catch (e) {
-        setError(e);
+        console.log(e);
+        setError(true);
       } finally {
         setLoading(false);
         // setTodoStatus("asc")
