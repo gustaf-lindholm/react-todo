@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { nanoid } from 'nanoid';
-import { TODOSTATUS } from './enums';
-import { TodoInterface } from './Interfaces';
+import { TODOSTATUS } from '../utils/enums';
+import { TodoInterface } from '../utils/Interfaces';
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 interface FormProps {

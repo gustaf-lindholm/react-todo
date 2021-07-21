@@ -1,7 +1,7 @@
 import * as React from 'react';
-import Todos from './Todos';
-import TodoForm from './TodoForm';
-import { TodoInterface } from './Interfaces';
+import Todos from './containers/Todos';
+import TodoForm from './containers/TodoForm';
+import { TodoInterface } from './utils/Interfaces';
 
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -55,9 +55,6 @@ function App() {
       <header className="App-header">
         <ul>
           <li>Header </li>
-          <li>
-            <button onClick={() => localStorage.clear()}>Clear storage</button>
-          </li>
         </ul>
       </header>
       <div>

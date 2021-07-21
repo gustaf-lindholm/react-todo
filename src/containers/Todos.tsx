@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './Todo';
-import Spinner from './Spinner';
-import { TODOSTATUS } from './enums';
-import { TodoInterface } from './Interfaces';
+import Spinner from '../components/Spinner';
+import { TODOSTATUS } from '../utils/enums';
+import { TodoInterface } from '../utils/Interfaces';
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 interface TodosProps {
