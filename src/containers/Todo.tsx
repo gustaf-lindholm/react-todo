@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import Spinner from './Spinner';
+import Spinner from '../components/Spinner';
 
 interface Props {
   todo: any;
